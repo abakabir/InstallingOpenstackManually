@@ -8,9 +8,9 @@ Welcome to the InstallingOpenstackManually wiki!
 
 ![Infrastructure Diagram](multinode1.png?raw=true) 
 
-!https://github.com/abbakabir/InstallingOpenstackManually/blob/master/multinode1.png(Infra)!
 
 HW Config:
+----------------------
 
 - System
 ```
