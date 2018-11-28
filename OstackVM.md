@@ -1,4 +1,4 @@
-Terraform : Openstack Infra:
+Openstack Infra:
 ===============================
 
 Welcome to the InstallingOpenstackManually wiki!
