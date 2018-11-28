@@ -374,18 +374,18 @@ rabbitmqctl set_permissions openstack ".*" ".*" ".*"
 
 4. Install and Configure Memcached on Controller
 
-Install and Configure Packages:		
+- Install and Configure Packages:		
 
 ```
 sudo su	 	 	 	 	 					
 apt install memcached python-memcache	
 ```
-Edit /etc/memcached.conf to define IP address:
+- Edit /etc/memcached.conf to define IP address:
 
 ```
 -l 10.0.0.11
 ```
-Restart Memcached Service:
+- Restart Memcached Service:
 
 ```
 service memcached restart
@@ -393,7 +393,7 @@ service memcached restart
 
 5. Install and Configure ETCD on Controller
 
-Create etcd User and directories:	
+- Create etcd User and directories:	
 									
 ```
 sudo su	 	 	 	 	 	 				
@@ -404,7 +404,7 @@ chown etcd:etcd /etc/etcd
 mkdir -p /var/lib/etcd
 chown etcd:etcd /var/lib/etcd
 ```
-Download and install etcd tarball	
+- Download and install etcd tarball	
 		
 ```							
 ETCD_VER=v3.2.7
@@ -415,7 +415,7 @@ cp /tmp/etcd/etcd /usr/bin/etcd
 cp /tmp/etcd/etcdctl /usr/bin/etcdctl
 ```
 
-Create and edit the /etc/etcd/etcd.conf.yml file	
+- Create and edit the /etc/etcd/etcd.conf.yml file	
 
 vim /etc/etcd/etcd.conf.yml
 
@@ -433,7 +433,7 @@ listen-peer-urls: http://0.0.0.0:2380
 listen-client-urls: http://10.0.0.11:2379
 ```
 
-Create and edit /lib/systemd/system/etcd.service file
+- Create and edit /lib/systemd/system/etcd.service file
 
 vim /lib/systemd/system/etcd.service	
  	 	 	 	 					
@@ -454,7 +454,7 @@ User=etcd
 [Install]	 	 	 	 	 					
 WantedBy=multi-user.target
 ```
-Enable and start etcd Service:
+- Enable and start etcd Service:
 
 ```
 systemctl enable etcd
@@ -463,7 +463,7 @@ systemctl start etcd
 
 6. Install and Configure Keystone - Identity Management on Controller
 
-Configure SQL Database for Keystone:
+- Configure SQL Database for Keystone:
 
 Run these commands:
 
@@ -476,51 +476,52 @@ GRANT ALL PRIVILEGES ON keystone.* TO 'keystone'@'%' IDENTIFIED BY 'openstack';
 EXIT;
 ```
 
-Install and Configure Packages:
+- Install and Configure Packages:
+
 Run these commands:
 
 ```
 sudo su
 ```
 
-Install required packages + crudini to edit .conf files
+- Install required packages + crudini to edit .conf files
 
 ```
 apt install keystone apache2 libapache2-mod-wsgi crudini -y
 ```
 
-Configure Keystone database access, as set above
+- Configure Keystone database access, as set above
 
 ```
 crudini --set /etc/keystone/keystone.conf database connection mysql+pymysql://keystone:openstack@controller/keystone
 ```
 	 	 	 	 	 	 	 	 	 	 	 
-Set Fernet Token Provider										
+- Set Fernet Token Provider										
 
 ```
 crudini --set /etc/keystone/keystone.conf token provider fernet
 ```
 
-Populate Identity Service Database
+- Populate Identity Service Database
 										
 ```
 su -s /bin/sh -c "keystone-manage db_sync" keystone	
 ```
 
-Initialize Fernet Repositories
+- Initialize Fernet Repositories
 
 ```
 keystone-manage fernet_setup --keystone-user keystone --keystone-group keystone 	
 keystone-manage credential_setup --keystone-user keystone --keystone-group keystone
 ```
 
-Bootstrap Identity Service		
+- Bootstrap Identity Service		
 								
 ```
 keystone-manage bootstrap --bootstrap-password openstack --bootstrap-admin-url http://controller:35357/v3/ --bootstrap-internal-url http://controller:5000/v3/ --bootstrap-public-url http://controller:5000/v3/ --bootstrap-region-id RegionOne
 ```
 
-Configure Apache Server:										
+- Configure Apache Server:										
 
 Edit /etc/apache2/apache2.conf and add following line:
 
@@ -528,13 +529,13 @@ Edit /etc/apache2/apache2.conf and add following line:
 ServerName controller
 ```
 								
-Restart the apache2 service
+- Restart the apache2 service
 
 ```
 service apache2 restart
 ```
 										
-Configure OpenStack Client Environment Scripts
+- Configure OpenStack Client Environment Scripts
 
 Create admin-openrc Script (in Primary User's Home Directory, for example)
 
@@ -551,7 +552,7 @@ export OS_IDENTITY_API_VERSION=3
 export OS_IMAGE_API_VERSION=2
 ```
  	 	 	 					
-Create demo-openrc Script									
+- Create demo-openrc Script									
 
 Insert following lines:										
 
@@ -566,7 +567,7 @@ export OS_IDENTITY_API_VERSION=3
 export OS_IMAGE_API_VERSION=2
 ```
  	 	 	 					
-Verify Keystone operation
+- Verify Keystone operation
 Run following commands:										
 
 ```
@@ -574,7 +575,7 @@ Run following commands:
 openstack token issue
 ```
 									
-Create Projects, Users and Roles	
+- Create Projects, Users and Roles	
 								
 Run following commands:										
 
@@ -582,37 +583,37 @@ Run following commands:
 . admin-openrc
 ```
 
-Create a service Project	
+- Create a service Project	
 
 ```
 openstack project create --domain default --description "Service Project" service
 ```
 
-Create a demo Project
+- Create a demo Project
 
 ```
 openstack project create --domain default --description "Demo Project" demo
 ```
 
-Create a demo User
+- Create a demo User
 
 ```
 openstack user create --domain default --password openstack demo	
 ```
 
-Create a user Role
+- Create a user Role
 
 ```
 openstack role create user
 ```
  	 	 	 	 	 				
-Add the user role to User demo in Project demo
+- Add the user role to User demo in Project demo
 
 ```
 openstack role add --project demo --user demo user
 ```
 
-Verify User demo	
+- Verify User demo	
 								
 Run following commands:
 
@@ -622,9 +623,9 @@ openstack token issue
 ```
 
 
-g- Install and Configure Glance - Image Service on Controller
+7- Install and Configure Glance - Image Service on Controller
 
-Configure SQL Database for Glance
+- Configure SQL Database for Glance
 
 Run following commands:
 
@@ -637,26 +638,26 @@ GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'%' IDENTIFIED BY 'openstack';
 EXIT;
 ```
     
-Create glance User
+- Create glance User
 
 ```
 . admin-openrc       
 openstack user create --domain default --password openstack glance 
 ```
 
-Add admin role to User glance in Project service
+- Add admin role to User glance in Project service
 
 ```
 openstack role add --project service --user glance admin 
 ```
      
-Create glance Service
+- Create glance Service
 
 ```
 openstack service create --name glance --description "OpenStack Image" image
 ```
 
-Create glance Service Endpoints
+- Create glance Service Endpoints
 
 ```
 openstack endpoint create --region RegionOne image public http://controller:9292       
@@ -664,7 +665,7 @@ openstack endpoint create --region RegionOne image internal http://controller:92
 openstack endpoint create --region RegionOne image admin http://controller:9292 
 ```
 
-Install and Configure Packages
+- Install and Configure Packages
 Run following commands:
 
 ```
@@ -675,13 +676,11 @@ apt install glance -y
 Configure /etc/glance/glance-api.conf Parameters
 Run following commands:
 
-Configure database access for glance
-
+- Configure database access for glance
 ```
 crudini --set /etc/glance/glance-api.conf database connection mysql+pymysql://glance:openstack@controller/glance
 ```
-Configure Identity Service access
-
+- Configure Identity Service access
 ```
 crudini --set /etc/glance/glance-api.conf keystone_authtoken auth_uri http://controller:5000         
 crudini --set /etc/glance/glance-api.conf keystone_authtoken auth_url http://controller:35357         
@@ -694,9 +693,7 @@ crudini --set /etc/glance/glance-api.conf keystone_authtoken username glance
 crudini --set /etc/glance/glance-api.conf keystone_authtoken password openstack         
 crudini --set /etc/glance/glance-api.conf paste_deploy flavor keystone
 ```
-
-Configure Glance to store Images on Local Filesystem
-
+- Configure Glance to store Images on Local Filesystem
 ```
 crudini --set /etc/glance/glance-api.conf glance_store stores "file,http"         
 crudini --set /etc/glance/glance-api.conf glance_store default_store file         
@@ -704,16 +701,13 @@ crudini --set /etc/glance/glance-api.conf glance_store filesystem_store_datadir 
 ```
 
 Configure /etc/glance/glance-registry.conf Parameters
-
 Run following commands:
 
-Configure database access for glance
-
+- Configure database access for glance
 ```
 crudini --set /etc/glance/glance-registry.conf database connection mysql+pymysql://glance:openstack@controller/glance
 ```
-Configure Identity Service access
-
+- Configure Identity Service access
 ```
 crudini --set /etc/glance/glance-registry.conf keystone_authtoken auth_uri http://controller:5000         
 crudini --set /etc/glance/glance-registry.conf keystone_authtoken auth_url http://controller:35357         
@@ -727,37 +721,30 @@ crudini --set /etc/glance/glance-registry.conf keystone_authtoken password opens
 crudini --set /etc/glance/glance-registry.conf paste_deploy flavor keystone
 ```
 
-Populate the Image Service Database
+- Populate the Image Service Database
 Run following commands:
-
 ```
 su -s /bin/sh -c "glance-manage db_sync" glance
 ```
-
-Restart glance Services
-
+- Restart glance Services
 ```
 service glance-registry restart         
 service glance-api restart 
 ```
-  
-Verify Glance Operation
+- Verify Glance Operation
 Run following commands:
-
 ```
 . admin-openrc          
 wget http://download.cirros-cloud.net/0.3.5/cirros-0.3.5-x86_64-disk.img          
 openstack image create cirros3.5 --file cirros-0.3.5-x86_64-disk.img --disk-format qcow2 --container-format bare --public          
 openstack image list
 ```
-
 Download Cloud Images: "https://docs.openstack.org/image-guide/obtain-images.html":https://docs.openstack.org/image-guide/obtain-images.html
 
-h- Install and Configure Nova (Compute Service) on Controller and Compute1
+8- Install and Configure Nova (Compute Service) on Controller and Compute1
 
-Configure SQL Databases for Nova
+- Configure SQL Databases for Nova
 Run following commands:
-
 ```
 sudo su      
 mysql      
@@ -771,18 +758,15 @@ GRANT ALL PRIVILEGES ON nova.* TO 'nova'@'%' IDENTIFIED BY 'openstack';
 GRANT ALL PRIVILEGES ON nova_cell0.* TO 'nova'@'localhost' IDENTIFIED BY 'openstack';      
 GRANT ALL PRIVILEGES ON nova_cell0.* TO 'nova'@'%' IDENTIFIED BY 'openstack';
 ```
-
-Create Compute Service User and add admin role in service Project
+- Create Compute Service User and add admin role in service Project
 Run following commands:
-
 ```
 . admin-openrc      
 openstack user create --domain default --password openstack nova      
 openstack role add --project service --user nova admin
 ```
-Create Compute Service & Endpoints
+- Create Compute Service & Endpoints
 Run following commands:
-
 ```
 . admin-openrc       
 openstack service create --name nova --description "OpenStack Compute" compute       
@@ -790,19 +774,15 @@ openstack endpoint create --region RegionOne compute public http://controller:87
 openstack endpoint create --region RegionOne compute internal http://controller:8774/v2.1       
 openstack endpoint create --region RegionOne compute admin http://controller:8774/v2.1       
 ```
-
-Create Placement Service User and add admin role in service Project
+- Create Placement Service User and add admin role in service Project
 Run following commands:
-
 ```
 . admin-openrc       
 openstack user create --domain default --password openstack placement       
 openstack role add --project service --user placement admin       
 ```
-
-Create Placement Service & Endpoints
+- Create Placement Service & Endpoints
 Run following commands:
-
 ```
 . admin-openrc       
 openstack service create --name placement --description "Placement API" placement       
@@ -810,27 +790,21 @@ openstack endpoint create --region RegionOne placement public http://controller:
 openstack endpoint create --region RegionOne placement internal http://controller:8778       
 openstack endpoint create --region RegionOne placement admin http://controller:8778       
 ```
-
-Install Nova Controller Packages
+- Install Nova Controller Packages
 Run following commands:
-
 ```
 sudo su        
 apt install -y nova-api nova-conductor nova-consoleauth nova-novncproxy nova-scheduler nova-placement-api        
 ```
-
-Configure MySQL & RabbitMQ parameters in /etc/nova/nova.conf
+- Configure MySQL & RabbitMQ parameters in /etc/nova/nova.conf
 Run following commands:
-
 ```
 crudini --set /etc/nova/nova.conf api_database connection mysql+pymysql://nova:openstack@controller/nova_api         
 crudini --set /etc/nova/nova.conf database connection mysql+pymysql://nova:openstack@controller/nova         
 crudini --set /etc/nova/nova.conf DEFAULT transport_url rabbit://openstack:openstack@controller         
 ```
-
-Configure Identity Service access
+- Configure Identity Service access
 Run following commands:
-
 ```
 crudini --set /etc/nova/nova.conf api auth_strategy keystone      
 crudini --set /etc/nova/nova.conf keystone_authtoken auth_uri http://controller:5000      
@@ -843,47 +817,32 @@ crudini --set /etc/nova/nova.conf keystone_authtoken project_name service
 crudini --set /etc/nova/nova.conf keystone_authtoken username nova      
 crudini --set /etc/nova/nova.conf keystone_authtoken password openstack      
 ```
-
-Configure support for Networking Service
-
+- Configure support for Networking Service
 Run following commands:
-
 ```
 crudini --set /etc/nova/nova.conf DEFAULT my_ip 10.0.0.11       
 crudini --set /etc/nova/nova.conf DEFAULT use _neutron True       
 crudini --set /etc/nova/nova.conf DEFAULT firewall_driver nova.virt.firewall.NoopFirewallDriver       
 ```
-
-Configure vnc proxy on Controller Node
-
+- Configure vnc proxy on Controller Node
 Run following commands:
-
 ```
 crudini --set /etc/nova/nova.conf vnc enabled True     
 crudini --set /etc/nova/nova.conf vnc vncserver_listen 10.0.0.11     
 crudini --set /etc/nova/nova.conf vnc vncserver_proxyclient_address 10.0.0.11     
 ```
-
-Configure Glance location
-
+- Configure Glance location
 Run following command:
-
 ```
 crudini --set /etc/nova/nova.conf glance api_servers http://controller:9292     
 ```
-
-Configure Lock Path for Oslo Concurrency
-
+- Configure Lock Path for Oslo Concurrency
 Run following command:
-
 ```
 crudini --set /etc/nova/nova.conf oslo_concurrency lock_path /var/lib/nova/tmp      
 ```
-
-Configure Placement API
-
+- Configure Placement API
 Run following commands:
-
 ```
 crudini --set /etc/nova/nova.conf placement os_region_name RegionOne      
 crudini --set /etc/nova/nova.conf placement project_domain_name Default
@@ -894,57 +853,39 @@ crudini --set /etc/nova/nova.conf placement auth_url http://controller:35357/v3
 crudini --set /etc/nova/nova.conf placement username placement
 crudini --set /etc/nova/nova.conf placement password openstack      
 ```
-
-Remove log_dir parameter in DEFAULT section
+- Remove log_dir parameter in DEFAULT section
 Run following command:
-
 ```
 crudini --del /etc/nova/nova.conf DEFAULT log_dir      
 ```
-
-Populate nova_api Database
-
+- Populate nova_api Database
 Run following commands:
-
 ```
 sudo su      
 su -s /bin/sh -c "nova-manage api_db sync" nova      
 ```
-
-Register cell0 Database
-
+- Register cell0 Database
 Run following command:
-
 ```
 su -s /bin/sh -c "nova-manage cell_v2 map_cell0" nova      
 ```
-
-Create cell1 Cell
-
+- Create cell1 Cell
 Run following command:
-
 ```
 su -s /bin/sh -c "nova-manage cell_v2 create_cell --name=cell1 --verbose" nova      
 ```
-
-Populate nova Database
-
+- Populate nova Database
 Run following command:
-
 ```
 su -s /bin/sh -c "nova-manage db sync" nova      
 ```
-
-Verify configuration of Cells
+- Verify configuration of Cells
 Run following command:
-
 ```
 nova-manage cell_v2 list_cells      
 ```
-
-Restart Services
+- Restart Services
 Run following commands:
-
 ```
 service nova-api restart      
 service nova-consoleauth restart      
@@ -952,33 +893,22 @@ service nova-scheduler restart
 service nova-conductor restart      
 service nova-novncproxy restart      
 ```
-
 Install and Configure Nova on Compute Node(s)
 
-
-Install Nova Compute Package
-
+- Install Nova Compute Package
 Run following commands:
-
 ```
-
 sudo su      
 apt update      
 apt install -y nova-compute crudini      
 ```
-
-Configure RabbitMQ access
-
+- Configure RabbitMQ access
 Run following command:
-
 ```
 crudini --set /etc/nova/nova.conf DEFAULT transport_url rabbit://openstack:openstack@controller       
 ```
-
-Configure Identity Service access
-
+- Configure Identity Service access
 Run following commands:
-
 ```
 crudini --set /etc/nova/nova.conf api auth_strategy keystone      
 crudini --set /etc/nova/nova.conf keystone_auth auth_uri http://controller:5000      
@@ -991,48 +921,33 @@ crudini --set /etc/nova/nova.conf keystone_auth project_name service
 crudini --set /etc/nova/nova.conf keystone_auth username nova      
 crudini --set /etc/nova/nova.conf keystone_auth password openstack      
 ```
-
-Configure support for Networking Service
-
+- Configure support for Networking Service
 Run following commands:
-
 ```
 crudini --set /etc/nova/nova.conf DEFAULT my_ip 10.0.0.31       
 crudini --set /etc/nova/nova.conf DEFAULT use_neutron True       
 crudini --set /etc/nova/nova.conf DEFAULT firewall_driver nova.virt.firewall.NoopFirewallDriver       
 ```
-
-Configure vnc Remote Console access on Compute Node
-
+- Configure vnc Remote Console access on Compute Node
 Run following commands:
-
 ```
 crudini --set /etc/nova/nova.conf vnc enabled True       
 crudini --set /etc/nova/nova.conf vnc vncserver_listen 0.0.0.0       
 crudini --set /etc/nova/nova.conf vnc vncserver_proxyclient_address 10.0.0.31       
 crudini --set /etc/nova/nova.conf vnc novncproxy_base_url http://10.0.0.11:6080/vnc_auto.html       
 ```
-
-Configure Glance location
-
+- Configure Glance location
 Run following command:
-
 ```
 crudini --set /etc/nova/nova.conf glance api_servers http://controller:9292      
 ```
-
-Configure Lock Path for Oslo Concurrency
-
+- Configure Lock Path for Oslo Concurrency
 Run following command:
-
 ```
 crudini --set /etc/nova/nova.conf oslo_concurrency lock_path /var/lib/nova/tmp      
 ```
-
-Configure Placement API
-
+- Configure Placement API
 Run following commands:
-
 ```
 crudini --set /etc/nova/nova.conf placement os_region_name RegionOne      
 crudini --set /etc/nova/nova.conf placement project_domain_name Default      
@@ -1043,42 +958,32 @@ crudini --set /etc/nova/nova.conf placement auth_url http://controller:35357/v3
 crudini --set /etc/nova/nova.conf placement username placement      
 crudini --set /etc/nova/nova.conf placement password openstack  
 ```
-Remove log_dir parameter in DEFAULT section
-
+- Remove log_dir parameter in DEFAULT section
 Run following command:
-
 ```
 crudini --del /etc/nova/nova.conf DEFAULT log_dir      
 ```
 
-use QEMU Emulator
-
+- use QEMU Emulator
 Run following command:
-
-
 ```
 crudini --set /etc/nova/nova-compute.conf libvirt virt_type qemu      
 ```
 
-Restart Nova Compute service       
-
+- Restart Nova Compute service
 Run following command:       
-
 ```
 service nova-compute restart       
 ```
 
-Discover Compute Node on Controller Node
-
+- Discover Compute Node on Controller Node
 Run following command:
-
 ```
 su -s /bin/sh -c "nova-manage cell_v2 discover_hosts --verbose" nova      
 ```
 
-Verify Compute Service Installation
+- Verify Compute Service Installation
 Run following commands:
-
 ```
 . admin-openrc      
 openstack compute service list      
@@ -1087,7 +992,7 @@ openstack image list
 nova-status upgrade check    
 ```
 
-i- Install and Configure Neutron (Network Service) on Controller Node and Compute1
+9- Install and Configure Neutron (Network Service) on Controller Node and Compute1
 
 Create Neutron SQL Database
 
