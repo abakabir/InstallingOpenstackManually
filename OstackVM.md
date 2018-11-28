@@ -13,7 +13,7 @@ Welcome to the InstallingOpenstackManually wiki!
 HW Config:
 ----------------------
 
-a- System
+1. System
 
 ```
 Controller:
@@ -39,7 +39,7 @@ RAM	         4+ GB	     6
 Primary Disk	 10+ GB	     20	
 ```
 
-b- Configure Adapter
+2. Configure Adapter
 
 ```
 VirtualBox Host-Only Network Ethernet Adapter #2	 
@@ -175,7 +175,7 @@ Networking Service	           Neutron	9696
 #  Prep of Nodes:
 ----------------------
 
-a- On controller, compute1 and storage1 set up /etc/network/interfaces:
+1. On controller, compute1 and storage1 set up /etc/network/interfaces:
 
 - Management Network :
 
@@ -202,7 +202,7 @@ iface eth2 inet manual
   down ip link set dev eth2 down
 ```
 
-b- Setup /etc/hosts :
+2. Setup /etc/hosts :
 
 ```
 10.0.0.11 controller
@@ -211,7 +211,7 @@ b- Setup /etc/hosts :
 10.0.0.41 block1
 10.0.0.100 deployment
 ```
-c- On Each Node, configure GRUB to enable standard Network Interface Names:
+3. On Each Node, configure GRUB to enable standard Network Interface Names:
 
 Edit /etc/default/grub and modify :
 ```
@@ -223,7 +223,7 @@ update-grub
 reboot 
 ```
 
-c- Configure 'sudo' access for user shaka	
+4. Configure 'sudo' access for user shaka	
 
 ```
 sudo su
@@ -236,7 +236,7 @@ shaka ALL=(ALL) NOPASSWD:ALL
 save, exit and run sudo su again to test
 ```
 
-d- Verify network configuration:
+5. Verify network configuration:
 
 ```
 ifconfig
@@ -246,7 +246,7 @@ ping -c 3 compute1
 ping -c 3 block1			
 ```
 
-d- On controller run following commands as superuser:
+6. On controller run following commands as superuser:
 
 ```
 apt update -y
@@ -254,7 +254,7 @@ apt upgrade -y
 apt install -y python python-simplejson glances vim
 ```
 
-e- On compute1 run following commands as superuser:
+7. On compute1 run following commands as superuser:
 
 ```
 apt update -y
@@ -264,7 +264,7 @@ echo "configfs" >> /etc/modules
 update-initramfs -u
 systemctl daemon-reload
 ```
-f- On storage Nodes run following commands as superuser: (/dev/xdby already exist for disk to be use by cinder)
+8. On storage Nodes run following commands as superuser: (/dev/xdby already exist for disk to be use by cinder)
 
 ```
 apt update -y
@@ -277,7 +277,7 @@ echo "configfs" >> /etc/modules
 update-initramfs -u
 systemctl daemon-reload
 ```
-g- Install and Configure Network Time Protocol
+9. Install and Configure Network Time Protocol
 
 ```
 Install and Configure Components										
@@ -285,14 +285,14 @@ sudo su
 apt install chrony
 ```
 
-- On NTP Server(Controller here) :
+10. On NTP Server(Controller here) :
 ```
 Edit /etc/chrony/chrony.conf:										
 set server to your Orgaznization's NTP Server, if you have one 
 set allow to 10.0.0.0/24	
 save and quit		
 ```
-- On NTP Client(Compute and Storage Nodes here) :
+11. On NTP Client(Compute and Storage Nodes here) :
 ```
 Edit /etc/chrony/chrony.conf:										
 set server to controller								
@@ -310,9 +310,10 @@ service chrony restart
 Verify:	
 chronyc sources	 	 	 	 	 					
 ```
-# 3- Installation of Openstack Components
+# Installation of Openstack Components
+----------------------
 
-a- Install Basic OpenStack Packages on All Nodes
+1. Install Basic OpenStack Packages on All Nodes
 
 ```
 sudo su										
@@ -323,7 +324,7 @@ reboot
 apt install python-openstackclient
 ```
 
-b- Install and Configure SQL Database - MariaDB on Controller
+2. Install and Configure SQL Database - MariaDB on Controller
 
 - Install and Configure Packages	
 ```									
@@ -351,7 +352,7 @@ service mysql restart
 mysql_secure_installation	 
 ```
 
-c- Install and Configure Message Queue - RabbitMQ on Controller
+3. Install and Configure Message Queue - RabbitMQ on Controller
 
 - Install and Configure Packages:		
 
@@ -371,7 +372,7 @@ rabbitmqctl add_user openstack openstack
 rabbitmqctl set_permissions openstack ".*" ".*" ".*" 
 ```
 
-d- Install and Configure Memcached on Controller
+4. Install and Configure Memcached on Controller
 
 Install and Configure Packages:		
 
@@ -390,7 +391,7 @@ Restart Memcached Service:
 service memcached restart
 ```
 
-e- Install and Configure ETCD on Controller
+5. Install and Configure ETCD on Controller
 
 Create etcd User and directories:	
 									
@@ -460,7 +461,7 @@ systemctl enable etcd
 systemctl start etcd
 ```
 
-f- Install and Configure Keystone - Identity Management on Controller
+6. Install and Configure Keystone - Identity Management on Controller
 
 Configure SQL Database for Keystone:
 
