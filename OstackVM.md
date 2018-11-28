@@ -3,7 +3,8 @@ Openstack Infra:
 
 Welcome to the InstallingOpenstackManually wiki!
 
-# 1- Infrastructure
+# Infrastructure
+----------------------
 
 
 ![Infrastructure Diagram](multinode1.png?raw=true) 
@@ -12,7 +13,8 @@ Welcome to the InstallingOpenstackManually wiki!
 HW Config:
 ----------------------
 
-- System
+a- System
+
 ```
 Controller:
 Virtual	      Recommended  Actual						
@@ -36,13 +38,16 @@ VCPU (cores)	 1-2+	     2
 RAM	         4+ GB	     6						
 Primary Disk	 10+ GB	     20	
 ```
-- Configure Adapter
+
+b- Configure Adapter
+
 ```
 VirtualBox Host-Only Network Ethernet Adapter #2	 
 IPv4 Addr: 10.0.0.1 
 IPv4 Net Mask: 255.255.255.0	
 DHCP Disabled	
 ```
+
 ```
 NAT      Network ProviderNetwork1										
 CIDR	      203.0.113.0/24                  DHCP Disabled
@@ -105,15 +110,15 @@ Passwords:
 
 Description	                      Parameter	           Value	
 
-- SQL Database 'root' Password	      MySQL_root	          openstack
-- 'admin' User Password	              ADMIN_PASS	          openstack
+- SQL Database 'root' Password	      MySQL_root	  openstack
+- 'admin' User Password	              ADMIN_PASS	  openstack
 - Database password for Cinder	      CINDER_DBPASS       openstack
-- 'cinder' User Password	              CINDER_PASS         openstack
+- 'cinder' User Password	      CINDER_PASS         openstack
 - Database password for Horizon	      DASH_DBPASS         openstack
 - 'demo' User Password	              DEMO_PASS           openstack
 - Database password for Glance	      GLANCE_DBPASS       openstack
-- 'glance' User Password	              GLANCE_PASS         openstack
-- Database password for Keystone	      KEYSTONE_DBPASS     openstack
+- 'glance' User Password	      GLANCE_PASS         openstack
+- Database password for Keystone      KEYSTONE_DBPASS     openstack
 - Secret for metadata server	      METADATA_SECRET     openstack
 - Database Password for Neutron	      NEUTRON_DBPASS      openstack
 - 'neutron' User Password	      NEUTRON_PASS        openstack
@@ -128,7 +133,7 @@ Host Addresses
 Name	        IPv4 Address	Netmask	        DNS Name server	
 controller	10.0.0.11	255.255.255.0	8.8.8.8	
 compute1 	10.0.0.31	255.255.255.0	8.8.8.8	
-storage1	        10.0.0.41	255.255.255.0	8.8.8.8
+storage1	10.0.0.41	255.255.255.0	8.8.8.8
 ```
 
 ```
@@ -144,7 +149,6 @@ Référence Guide :
 
 
 ```
-
 Default Ports								
 Description	                  Service	Port					
 Horizon Dashboard unencrypted	     HTTP	80					
@@ -168,7 +172,8 @@ Networking Service	           Neutron	9696
 ```
 
 
-# 2- Prep of Nodes:
+#  Prep of Nodes:
+----------------------
 
 a- On controller, compute1 and storage1 set up /etc/network/interfaces:
 
