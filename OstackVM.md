@@ -994,10 +994,8 @@ nova-status upgrade check
 
 9- Install and Configure Neutron (Network Service) on Controller Node and Compute1
 
-Create Neutron SQL Database
-
+- Create Neutron SQL Database
 Run following commands:
-
 ```
 sudo su      
 mysql      
@@ -1007,20 +1005,16 @@ GRANT ALL PRIVILEGES ON neutron.* TO 'neutron'@'%' IDENTIFIED BY 'openstack';
 EXIT;
 ```
 
-Create neutron User and add admin Role in service Project
-
+- Create neutron User and add admin Role in service Project
 Run following commands:
-
 ```
 . admin-openrc      
 openstack user create --domain default --password openstack neutron      
 openstack role add --project service --user neutron admin
 ```
 
-Create Neutron Service and Endpoints
-
+- Create Neutron Service and Endpoints
 Run following commands:
-
 ```
 openstack service create --name neutron --description "OpenStack Networking" network      
 openstack endpoint create --region RegionOne network public http://controller:9696      
@@ -1028,37 +1022,29 @@ openstack endpoint create --region RegionOne network internal http://controller:
 openstack endpoint create --region RegionOne network admin http://controller:9696     
 ```
 
-Install Neutron Packages
-
+- Install Neutron Packages
 Run following commands:
-
 ```
 sudo su           
 apt install -y neutron-server neutron-plugin-ml2 neutron-linuxbridge-agent neutron-l3-agent neutron-dhcp-agent  neutron-metadata-agent
 ```
 
-Configure SQL Database and RabbitMQ access for Neutron
-
+- Configure SQL Database and RabbitMQ access for Neutron
 Run following commands:
-
 ```
 crudini --set /etc/neutron/neutron.conf database connection mysql+pymysql://neutron:openstack@controller/neutron           
 crudini --set /etc/neutron/neutron.conf DEFAULT transport_url rabbit://openstack:openstack@controller           
 ```
 
-Enable the Modular Layer 2 (ML2) plug-in, router service, and overlapping IP addresses
-
+- Enable the Modular Layer 2 (ML2) plug-in, router service, and overlapping IP addresses
 Run following commands:
-
 ```
 crudini --set /etc/neutron/neutron.conf DEFAULT core_plugin ml2           
 crudini --set /etc/neutron/neutron.conf DEFAULT service_plugins router           
 crudini --set /etc/neutron/neutron.conf DEFAULT allow_overlapping_ips true           
 ```
-Configure Identity Service access
-
+- Configure Identity Service access
 Run following commands:
-
 ```
 crudini --set /etc/neutron/neutron.conf api auth_strategy keystone        
 crudini --set /etc/neutron/neutron.conf keystone_authtoken auth_uri http://controller:5000        
@@ -1072,18 +1058,15 @@ crudini --set /etc/neutron/neutron.conf keystone_authtoken username neutron
 crudini --set /etc/neutron/neutron.conf keystone_authtoken password openstack        
 ```
 
-Configure Networking to notify Compute of network topology changes 
-
+- Configure Networking to notify Compute of network topology changes 
 Run following commands:
-
 ```
 crudini --set /etc/neutron/neutron.conf DEFAULT notify_nova_on_port_status_changes true        
 crudini --set /etc/neutron/neutron.conf DEFAULT notify_nova_on_port_data_changes true        
 ```
 
-Configure Nova access
+- Configure Nova access
 Run following commands:
-
 ```
 crudini --set /etc/neutron/neutron.conf nova auth_url http://controller:35357        
 crudini --set /etc/neutron/neutron.conf nova auth_type password        
@@ -1096,90 +1079,79 @@ crudini --set /etc/neutron/neutron.conf nova password openstack
 ```
 
 Configure ML2 Plugin
-
 Run following commands:
 
-Enable flat, VLAN and VXLAN Networks
+- Enable flat, VLAN and VXLAN Networks
 ```
 crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 type_drivers flat,vlan,vxlan        
 ```
-Enable VXLAN Self-service Networks
+- Enable VXLAN Self-service Networks
 ```
 crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 tenant_network_types vxlan        
 ```
-Enable Linux Bridge and L2Population mechanisms
+- Enable Linux Bridge and L2Population mechanisms
 ```
 crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 mechanism_drivers linuxbridge,l2population        
 ```
-Enable Port Security Extenstion Driver
+- Enable Port Security Extenstion Driver
 ```
 crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2 extension_drivers port_security        
 ```
-Configure provider Virtual Network as flat Network
+- Configure provider Virtual Network as flat Network
 ```
 crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2_type_flat flat_networks provider        
 ```
-Configure VXLAN Network Identifier Range for Self-service Networks
+- Configure VXLAN Network Identifier Range for Self-service Networks
 ```
 crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini ml2_type_vxlan vni_ranges 1:1000        
 ```
-Enable ipset to increase efficiency of Security Group Rules
+- Enable ipset to increase efficiency of Security Group Rules
 ```
 crudini --set /etc/neutron/plugins/ml2/ml2_conf.ini securitygroup enable_ipset true        
 ```
 
 Configure the Linux Bridge Agent
-
 Run following commands:
 
-Configure provider Virtual Network mapping to Physical Interface
+- Configure provider Virtual Network mapping to Physical Interface
 ```
 crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini linux_bridge physical_interface_mappings provider:eth1
 ```
-Enable VXLAN for Self-service Networks, configure IP address of the Management Interface handling VXLAN traffic
+- Enable VXLAN for Self-service Networks, configure IP address of the Management Interface handling VXLAN traffic
 ```
 crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini vxlan enable_vxlan true              
 crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini vxlan local_ip 10.0.0.11              
 crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini vxlan l2_population true              
 ```
-Enable security groups and configure the Linux bridge iptables firewall driver
+- Enable security groups and configure the Linux bridge iptables firewall driver
 ```
 crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini securitygroup enable_security_group true              
 crudini --set /etc/neutron/plugins/ml2/linuxbridge_agent.ini securitygroup firewall_driver neutron.agent.linux.iptables_firewall.IptablesFirewallDriver              
 ```
 
-Configure the Layer-3 Agent
-
+- Configure the Layer-3 Agent
 Run following command:
-
 ```
 crudini --set /etc/neutron/l3_agent.ini DEFAULT interface_driver linuxbridge        
 ```
 
-Configure the DHCP Agent
-
+- Configure the DHCP Agent
 Run following commands:
-
 ```
 crudini --set /etc/neutron/dhcp_agent.ini DEFAULT interface_driver linuxbridge        
 crudini --set /etc/neutron/dhcp_agent.ini DEFAULT dhcp_driver neutron.agent.linux.dhcp.Dnsmasq        
 crudini --set /etc/neutron/dhcp_agent.ini DEFAULT enable_isolated_metadata true      
 ```
 
-Configure Metadata Agent
-
+- Configure Metadata Agent
 Run following commands:
-
 ```
 crudini --set /etc/neutron/metadata_agent.ini DEFAULT nova_metadata_host controller        
 crudini --set /etc/neutron/metadata_agent.ini DEFAULT metadata_proxy_shared_secret openstack        
 ```
 
-Configure Compute Service to use Neutron
-
+- Configure Compute Service to use Neutron
 Run following commands:
-
-
 ```
 crudini --set /etc/nova/nova.conf neutron url http://controller:9696      
 crudini --set /etc/nova/nova.conf neutron auth_url http://controller:35357        
@@ -1194,8 +1166,7 @@ crudini --set /etc/nova/nova.conf neutron service_metadata_proxy true
 crudini --set /etc/nova/nova.conf neutron metadata_proxy_shared_secret openstack        
 ```
 
-Populate Neutron Database
-
+- Populate Neutron Database
 Run following Command:
 
 ```
